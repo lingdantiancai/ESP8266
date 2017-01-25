@@ -56,8 +56,8 @@ void loop() {
       return;
     }
   }
-
-  if(millis() - lastCheckInTime > postingInterval || lastCheckInTime==0) {    //这里是进过一段时间后进行登陆验证，防止中途登陆失败，数据无法上传。
+//这里是进过一段时间后进行登陆验证，防止中途登陆失败，数据无法上传
+  if(millis() - lastCheckInTime > postingInterval || lastCheckInTime==0) {         
     checkIn();
   }
   
@@ -100,18 +100,18 @@ void processMessage(aJsonObject *msg){                      //这里可以参看
     if(M == "say"){                                           //在这里进行判断，M，以及C，进行相应的操作，
       String C = content->valuestring;
       String F_C_ID = client_id->valuestring;
-      if(C == "play"){
+      if(C == "stop"){
         for(int i=0;i<arr_len;i++){
           state[i] = LOW;
           digitalWrite(pins[i], state[i]);
         }
-        sayToClient(F_C_ID,"LED All on!");    
-      }else if(C == "stop"){
+        sayToClient(F_C_ID,"LED All off!");    //这里告诉服务器现在LED的状态
+      }else if(C == "play"){
         for(int i=0;i<arr_len;i++){
           state[i] = HIGH;
           digitalWrite(pins[i], state[i]);
         }
-        sayToClient(F_C_ID,"LED All off!");    
+        sayToClient(F_C_ID,"LED All on!");    
       }else{
         int pin = C.toInt();
         if(pin > 0 && pin <= arr_len){
@@ -131,7 +131,7 @@ void checkIn() {
 }
 
 void sayToClient(String client_id, String content){
-  String msg = "{\"M\":\"say\",\"ID\":\"" + client_id + "\",\"C\":\"" + content + "\"}\n";  //这里是向别的设备发送消息的语句。
+  String msg = "{\"M\":\"say\",\"ID\":\"" + client_id + "\",\"C\":\"" + content + "\"}\n";  //这里是向别的设备或者服务器发送消息的语句。
   client.print(msg);
   lastCheckInTime = millis();
 }
