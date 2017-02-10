@@ -10,8 +10,8 @@
 #include <aJSON.h>
 
 //=============  此处必须修该============
-String DEVICEID="1354"; // 你的设备编号   ==
-String  APIKEY = "4b5d90d07"; // 设备密码==
+String DEVICEID="1376"; // 你的设备编号   ==
+String  APIKEY = "a576c2924"; // 设备密码==
 //=======================================
 unsigned long lastCheckInTime = 0; //记录上次报到时间
 const unsigned long postingInterval = 40000; // 每隔40秒向服务器报到一次
@@ -22,22 +22,20 @@ const char* password = "gaoyu123456";//无线密码
 const char* host = "www.bigiot.net";
 const int httpPort = 8181;
 
-int pins[4] = {13,12,14,15};//其中12，13，15为rgb灯泡的控制。
-int state[4] = {HIGH,HIGH,HIGH,HIGH};//这里通过数组来分别给四个继电器控制
-int arr_len = sizeof(pins)/sizeof(pins[0]);//通过这这个除法来获取继电器的个数。
-boolean LED_Status = LOW;
+
+boolean LED_Status = LOW; //LED状态的标志位值
 void checkIn() ;
 void setup() {
   Serial.begin(115200);//打开串口
   delay(1000);
   
   WiFi.begin(ssid, password);//这里便是esp8266连接wifi的语句
-  //默认输出关闭电频
-  for(int i=0;i<arr_len;i++){
-    pinMode(pins[i], OUTPUT);
-    digitalWrite(pins[i], state[i]);
-  }
-  
+  pinMode(13, OUTPUT);//在这里首先设置这一个灯泡的功能为输出
+  digitalWrite(13,LOW);//让这个灯泡的初始状态为灭。
+  delay(1000);
+  digitalWrite(13,HIGH);//让这个灯泡的初始状态为灭。
+  delay(1000);
+  digitalWrite(13,LOW);//让这个灯泡的初始状态为灭。
 }
 
 WiFiClient client;
@@ -101,43 +99,43 @@ void processMessage(aJsonObject *msg){                      //这里可以参看
     if(M == "say"){                                           //在这里进行判断，M，以及C，进行相应的操作，
       String C = content->valuestring;
       String F_C_ID = client_id->valuestring;
-      if(C == "stop"){
-        for(int i=0;i<arr_len;i++){
-          state[i] = LOW;
-          digitalWrite(pins[i], state[i]);
-        }
-        sayToClient(F_C_ID,"LED All off!");    //这里告诉服务器现在LED的状态
-        LED_Status = LOW;
-      }else if(C == "play"){
-        for(int i=0;i<arr_len;i++){
-          state[i] = HIGH;
-          digitalWrite(pins[i], state[i]);
-        }
-        sayToClient(F_C_ID,"LED All on!");   
-         LED_Status = HIGH;
-      }else if(C == "minus"){
-        for(int i=0;i<arr_len;i++){
-          state[i] = LOW;
-          digitalWrite(pins[i], state[i]);
-        }
-          digitalWrite(12, HIGH);
-          sayToClient(F_C_ID,"Geen Light"); 
-         sayToClient("D1376","GO");
-        }else if(C == "plus"){
-        for(int i=0;i<arr_len;i++){
-          state[i] = LOW;
-          digitalWrite(pins[i], state[i]);
-        }
+      if(C == "GO"){
+
           digitalWrite(13, HIGH);
-          sayToClient(F_C_ID,"Blue Light"); 
-        }else if(C == "up"){
-        for(int i=0;i<arr_len;i++){
-          state[i] = LOW;
-          digitalWrite(pins[i], state[i]);
-        }
-          digitalWrite(15, HIGH);
-          sayToClient(F_C_ID,"Red Light"); 
-        }
+       
+        sayToClient("U1310","Test Success");    //回传给服务器测试状态
+        //LED_Status = LOW;
+      }
+//      else if(C == "play"){
+//        for(int i=0;i<arr_len;i++){
+//          state[i] = HIGH;
+//          digitalWrite(pins[i], state[i]);
+//        }
+//        sayToClient(F_C_ID,"LED All on!");   
+//         LED_Status = HIGH;
+//      }else if(C == "minus"){
+//        for(int i=0;i<arr_len;i++){
+//          state[i] = LOW;
+//          digitalWrite(pins[i], state[i]);
+//        }
+//          digitalWrite(12, HIGH);
+//          sayToClient(F_C_ID,"Geen Light"); 
+//          sayToClient("D1376","GO");
+//        }else if(C == "plus"){
+//        for(int i=0;i<arr_len;i++){
+//          state[i] = LOW;
+//          digitalWrite(pins[i], state[i]);
+//        }
+//          digitalWrite(13, HIGH);
+//          sayToClient(F_C_ID,"Blue Light"); 
+//        }else if(C == "up"){
+//        for(int i=0;i<arr_len;i++){
+//          state[i] = LOW;
+//          digitalWrite(pins[i], state[i]);
+//        }
+//          digitalWrite(15, HIGH);
+//          sayToClient(F_C_ID,"Red Light"); 
+//        }
       }
     }
 

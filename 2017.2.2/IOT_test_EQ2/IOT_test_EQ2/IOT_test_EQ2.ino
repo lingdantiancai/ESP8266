@@ -122,7 +122,8 @@ void processMessage(aJsonObject *msg){                      //这里可以参看
         }
           digitalWrite(12, HIGH);
           sayToClient(F_C_ID,"Geen Light"); 
-         sayToClient("D1376","GO");
+          sayToClient("D1376","GO");
+          sayToClient("U1310","Received");
         }else if(C == "plus"){
         for(int i=0;i<arr_len;i++){
           state[i] = LOW;
