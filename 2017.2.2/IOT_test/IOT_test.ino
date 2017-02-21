@@ -16,13 +16,13 @@ String  APIKEY = "a576c2924"; // 设备密码==
 unsigned long lastCheckInTime = 0; //记录上次报到时间
 const unsigned long postingInterval = 40000; // 每隔40秒向服务器报到一次
 
-const char* ssid     = "Xiaomi_3591";//无线名称
-const char* password = "gaoyu123456";//无线密码
+const char* ssid     = "SWJTU-cer";//无线名称
+const char* password = "12345689";//无线密码
 
 const char* host = "www.bigiot.net";
 const int httpPort = 8181;
 
-
+String inputString ;  //服务器回传数据
 boolean LED_Status = LOW; //LED状态的标志位值
 void checkIn() ;
 void setup() {
@@ -62,7 +62,7 @@ void loop() {
   
   // Read all the lines of the reply from server and print them to Serial
   if (client.available()) {
-    String inputString = client.readStringUntil('\n');
+     inputString = client.readStringUntil('\n');
     inputString.trim();
     Serial.println(inputString);
     int len = inputString.length()+1;
@@ -76,9 +76,14 @@ void loop() {
   }
   int a = random(0,10);
    String msg = "{\"M\":\"update\",\"ID\":\"" + DEVICEID + "\",\"V\":{\"1345\":\"" + a + "\",\"1344\":\"" + LED_Status + "\"}}\n";
-   client.print(msg);
+   client.print(msg);                              //这里是一个上传数据的语句，我在这里上传了一个随机数，进行数据上传测试。
+   String time1  = "{\"M\":\"time\",\"F\":\"stamp\"}\n";
+   client.print(time1); 
+
+  
+   delay(11000);
 //    client.print("{\"M\":\"update\",\"ID\":\"");
-//    client.print(DEVICEID);                                 //这里是一个上传数据的语句，我在这里上传了一个随机数，进行数据上传测试。
+//    client.print(DEVICEID);                                 /
 //    client.print("\",\"V\":{\"");
 //    client.print(1345);
 //    client.print("\":\"");
@@ -96,7 +101,12 @@ void processMessage(aJsonObject *msg){                      //这里可以参看
     return;
   }
     String M = method->valuestring;
-    if(M == "say"){                                           //在这里进行判断，M，以及C，进行相应的操作，
+    if(M == "time"){                                           //在这里进行判断，M，以及C，进行相应的操作，
+      //////////////////////////////////////
+      int Position = inputString.indexOf("T");
+      String time2 =inputString.substring(17,27);
+      Serial.println(time2);
+      /////////////////////////////////////
       String C = content->valuestring;
       String F_C_ID = client_id->valuestring;
       if(C == "GO"){

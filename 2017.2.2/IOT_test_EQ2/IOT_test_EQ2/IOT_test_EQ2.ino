@@ -16,8 +16,8 @@ String  APIKEY = "4b5d90d07"; // 设备密码==
 unsigned long lastCheckInTime = 0; //记录上次报到时间
 const unsigned long postingInterval = 40000; // 每隔40秒向服务器报到一次
 
-const char* ssid     = "Xiaomi_3591";//无线名称
-const char* password = "gaoyu123456";//无线密码
+const char* ssid     = "SWJTU-cer";//无线名称
+const char* password = "12345689";//无线密码
 
 const char* host = "www.bigiot.net";
 const int httpPort = 8181;
