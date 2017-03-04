@@ -116,7 +116,7 @@ void processMessage(aJsonObject *msg){                      //这里可以参看
       int time3,hour,minute,second,utc;
       time3 = T % 86400;           //在这句以及下面的几个语句中将时间秒数
       hour = (time3/3600)+8;       //转化为小时，和分钟并且显示出来
-      minute = time3/(3600*60);
+      minute = (time3%3600)/60;
       second = time3 % 60;
       Serial.print("Hour:");
       Serial.print(hour);
